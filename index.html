@@ -90,49 +90,74 @@ Tambah Member
 
 </div>
 
-<script>
+<script type="module">
 
-let members = [];
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import {
+  getFirestore,
+  collection,
+  addDoc,
+  getDocs
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-function tambahMember(){
+const firebaseConfig = {
+  apiKey: "AIzaSyA8gKMCuV1AwuLx3B7j9BuSSqd4sfzegAU",
+  authDomain: "cirtot-member.firebaseapp.com",
+  projectId: "cirtot-member",
+  storageBucket: "cirtot-member.firebasestorage.app",
+  messagingSenderId: "166354013678",
+  appId: "1:166354013678:web:69fd3e49765db6023f52ff"
+};
 
-let nama = document.getElementById("nama").value;
-let paket = document.getElementById("paket").value;
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
 
-if(nama==""){
-alert("Isi nama dulu bre");
-return;
+window.tambahMember = async function(){
+
+  let nama = document.getElementById("nama").value;
+  let paket = document.getElementById("paket").value;
+
+  if(nama==""){
+    alert("Isi nama dulu bre");
+    return;
+  }
+
+  await addDoc(collection(db, "members"), {
+    nama: nama,
+    paket: paket,
+    tanggal: new Date().toISOString()
+  });
+
+  document.getElementById("nama").value = "";
+
+  alert("Member berhasil disimpan!");
+
+  tampil();
 }
 
-members.push({
-nama:nama,
-paket:paket
-});
+async function tampil(){
+
+  let html = "";
+
+  const querySnapshot = await getDocs(collection(db, "members"));
+
+  querySnapshot.forEach((doc) => {
+
+    const m = doc.data();
+
+    html += `
+    <div class="member">
+      <b>${m.nama}</b><br>
+      ${m.paket}
+    </div>
+    `;
+
+  });
+
+  document.getElementById("hasil").innerHTML = html;
+}
 
 tampil();
-
-document.getElementById("nama").value="";
-
-}
-
-function tampil(){
-
-let html="";
-
-members.forEach((m)=>{
-
-html += `
-<div class="member">
-<b>${m.nama}</b><br>
-${m.paket}
-</div>
-`;
-
-});
-
-document.getElementById("hasil").innerHTML=html;
-
-}
 
 </script>
 
