@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Member Cirtot</title>
+
+<style>
+body{
+font-family:Arial;
+background:#f5f5f5;
+padding:15px;
+}
+
+.card{
+background:white;
+padding:15px;
+border-radius:10px;
+margin-bottom:10px;
+}
+
+input,select{
+width:100%;
+padding:10px;
+margin-bottom:10px;
+}
+
+button{
+width:100%;
+padding:12px;
+background:orange;
+border:none;
+color:white;
+font-size:16px;
+border-radius:8px;
+}
+
+.member{
+background:#eee;
+padding:10px;
+margin-top:10px;
+border-radius:8px;
+}
+</style>
+</head>
+
+<body>
+
+<h1>🔥 Member Cirtot 🔥</h1>
+
+<div class="card">
+
+<h3>Paket 1 - Rp25.000</h3>
+
+<ul>
+<li>Gratis 1 cireng setiap hari</li>
+<li>Dapat stiker</li>
+</ul>
+
+<h3>Paket 2 - Rp200.000</h3>
+
+<ul>
+<li>Folback akun TikTok Cirtot</li>
+<li>Gratis 1 cireng setiap hari</li>
+<li>Potbar bersama owner</li>
+</ul>
+
+</div>
+
+<div class="card">
+
+<input type="text" id="nama" placeholder="Nama Member">
+
+<select id="paket">
+<option>Paket 1</option>
+<option>Paket 2</option>
+</select>
+
+<button onclick="tambahMember()">
+Tambah Member
+</button>
+
+</div>
+
+<div class="card">
+
+<h3>Daftar Member</h3>
+
+<div id="hasil"></div>
+
+</div>
+
+<script>
+
+let members = [];
+
+function tambahMember(){
+
+let nama = document.getElementById("nama").value;
+let paket = document.getElementById("paket").value;
+
+if(nama==""){
+alert("Isi nama dulu bre");
+return;
+}
+
+members.push({
+nama:nama,
+paket:paket
+});
+
+tampil();
+
+document.getElementById("nama").value="";
+
+}
+
+function tampil(){
+
+let html="";
+
+members.forEach((m)=>{
+
+html += `
+<div class="member">
+<b>${m.nama}</b><br>
+${m.paket}
+</div>
+`;
+
+});
+
+document.getElementById("hasil").innerHTML=html;
+
+}
+
+</script>
+
+</body>
+</html>
