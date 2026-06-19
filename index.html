@@ -122,18 +122,24 @@ window.tambahMember = async function(){
     return;
   }
 
-  await addDoc(collection(db, "members"), {
-    nama: nama,
-    paket: paket,
-    tanggal: new Date().toISOString()
-  });
+  const sekarang = new Date();
 
-  document.getElementById("nama").value = "";
+const expired = new Date();
 
-  alert("Member berhasil disimpan!");
-
-  tampil();
+if(paket == "Paket 1"){
+  expired.setDate(expired.getDate() + 14);
+}else{
+  expired.setDate(expired.getDate() + 30);
 }
+
+await addDoc(collection(db, "members"), {
+  idMember: "CRT" + Date.now(),
+  nama: nama,
+  paket: paket,
+  tanggalDaftar: sekarang.toLocaleDateString(),
+  expired: expired.toLocaleDateString(),
+  status: "Aktif"
+});
 
 async function tampil(){
 
@@ -147,8 +153,11 @@ async function tampil(){
 
     html += `
     <div class="member">
-      <b>${m.nama}</b><br>
-      ${m.paket}
+      ID : ${m.idMember}<br>
+<b>${m.nama}</b><br>
+${m.paket}<br>
+Status : ${m.status}<br>
+Expired : ${m.expired}
     </div>
     `;
 
