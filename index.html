@@ -93,6 +93,7 @@ Tambah Member
 <script type="module">
 
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+
 import {
   getFirestore,
   collection,
@@ -114,53 +115,60 @@ const db = getFirestore(app);
 
 window.tambahMember = async function(){
 
-  let nama = document.getElementById("nama").value;
+  let nama = document.getElementById("nama").value.trim();
   let paket = document.getElementById("paket").value;
 
-  if(nama==""){
+  if(nama === ""){
     alert("Isi nama dulu bre");
     return;
   }
 
   const sekarang = new Date();
+  const expired = new Date();
 
-const expired = new Date();
+  if(paket === "Paket 1"){
+    expired.setDate(expired.getDate() + 14);
+  }else{
+    expired.setDate(expired.getDate() + 30);
+  }
 
-if(paket == "Paket 1"){
-  expired.setDate(expired.getDate() + 14);
-}else{
-  expired.setDate(expired.getDate() + 30);
-}
+  await addDoc(collection(db, "members"), {
+    idMember: "CRT" + Date.now(),
+    nama: nama,
+    paket: paket,
+    tanggalDaftar: sekarang.toLocaleDateString(),
+    expired: expired.toLocaleDateString(),
+    status: "Aktif"
+  });
 
-await addDoc(collection(db, "members"), {
-  idMember: "CRT" + Date.now(),
-  nama: nama,
-  paket: paket,
-  tanggalDaftar: sekarang.toLocaleDateString(),
-  expired: expired.toLocaleDateString(),
-  status: "Aktif"
-});
+  document.getElementById("nama").value = "";
+
+  alert("Member berhasil ditambahkan");
+
+  tampil();
+};
 
 async function tampil(){
 
   let html = "";
 
-  const querySnapshot = await getDocs(collection(db, "members"));
+  const querySnapshot = await getDocs(
+    collection(db, "members")
+  );
 
-  querySnapshot.forEach((doc) => {
+  querySnapshot.forEach((doc)=>{
 
     const m = doc.data();
 
     html += `
-    <div class="member">
-      ID : ${m.idMember}<br>
-<b>${m.nama}</b><br>
-${m.paket}<br>
-Status : ${m.status}<br>
-Expired : ${m.expired}
-    </div>
+      <div class="member">
+        ID : ${m.idMember}<br>
+        <b>${m.nama}</b><br>
+        ${m.paket}<br>
+        Status : ${m.status}<br>
+        Expired : ${m.expired}
+      </div>
     `;
-
   });
 
   document.getElementById("hasil").innerHTML = html;
